@@ -1,18 +1,12 @@
 package app
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
+	"github.com/evgenz911/myapp/internal/app/handlers"
 	"github.com/evgenz911/myapp/utils"
 )
-
-type pingResp struct {
-	Status string `json:"status"`
-	Time   string `json:"time"`
-}
 
 func withRequestID(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -36,14 +30,7 @@ func Run() {
 	})
 
 	// Пример JSON-ручки: /ping
-	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		utils.LogRequest(r)
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		_ = json.NewEncoder(w).Encode(pingResp{
-			Status: "ok",
-			Time:   time.Now().UTC().Format(time.RFC3339),
-		})
-	})
+	mux.HandleFunc("/ping", handlers.Ping)
 
 	mux.HandleFunc("/fail", func(w http.ResponseWriter, r *http.Request) {
 		utils.LogRequest(r)
